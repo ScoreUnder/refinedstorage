@@ -63,6 +63,8 @@ public class GridItemDeltaMessage {
     public static void handle(GridItemDeltaMessage message, Supplier<NetworkEvent.Context> ctx) {
         BaseScreen.executeLater(GridScreen.class, grid -> {
             message.clientDeltas.forEach(p -> grid.getView().postChange(p.getLeft(), p.getRight()));
+
+            grid.getView().sort();
         });
 
         ctx.get().setPacketHandled(true);

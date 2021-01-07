@@ -30,8 +30,6 @@ public interface IGridStack {
 
     int getQuantity();
 
-    void setQuantity(int amount);
-
     String getFormattedFullQuantity();
 
     void draw(MatrixStack matrixStack, BaseScreen<?> screen, int x, int y);

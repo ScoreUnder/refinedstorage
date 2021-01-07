@@ -13,22 +13,22 @@ public final class GridFilterParser {
     private GridFilterParser() {
     }
 
-    public static Predicate<IGridStack> getFilters(@Nullable IGrid grid, String query, List<IFilter> filters) {
+    public static List<Predicate<IGridStack>> getFilters(@Nullable IGrid grid, String query, List<IFilter> filters) {
         List<Predicate<IGridStack>> gridFilters;
 
         String[] orParts = query.split("\\|");
 
         if (orParts.length == 1) {
-            gridFilters = getFilters(orParts[0]);
+            gridFilters = getFilters(query);
         } else {
-            List<Predicate<IGridStack>> orPartFilters = new LinkedList<>();
+            List<List<Predicate<IGridStack>>> orPartFilters = new LinkedList<>();
 
             for (String orPart : orParts) {
-                orPartFilters.add(AndGridFilter.of(getFilters(orPart)));
+                orPartFilters.add(getFilters(orPart));
             }
 
             gridFilters = new LinkedList<>();
-            gridFilters.add(OrGridFilter.of(orPartFilters));
+            gridFilters.add(new OrGridFilter(orPartFilters));
         }
 
         if (grid != null) {
@@ -43,7 +43,7 @@ public final class GridFilterParser {
             gridFilters.add(new FilterGridFilter(filters));
         }
 
-        return AndGridFilter.of(gridFilters);
+        return gridFilters;
     }
 
     private static List<Predicate<IGridStack>> getFilters(String query) {
